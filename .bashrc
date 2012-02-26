@@ -186,4 +186,6 @@ export EDITOR=vim
 export DEBFULLNAME="Thilo Uttendorfer"
 export DEBEMAIL="debian@uttendorfer.net"
 
+[ -d ~/bin ] && export PATH="${PATH}:~/bin"
+[ -d ~/configs-and-scripts/bin ] && export PATH="${PATH}:~/configs-and-scripts/bin"
 
