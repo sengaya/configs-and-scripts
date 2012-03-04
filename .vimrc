@@ -31,6 +31,9 @@ set paste
 :set pastetoggle=<F2>
 inoremap <F2> <Esc><F2>a
 
+" show line and column number
+set ruler
+
 " comments
 map ## :s/^/#/<CR>
 map #/ :s/^/\/\//<CR>
