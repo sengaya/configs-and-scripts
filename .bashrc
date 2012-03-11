@@ -12,6 +12,9 @@ function parse_git_branch {
 }
 
 
+
+### functions ###
+
 function set_prompt {
     # set a fancy prompt
     LIGHT_GRAY="\[\033[0;37m\]"
@@ -20,6 +23,58 @@ function set_prompt {
     WHITE="\[\033[1;37m\]"
     COLOR_NONE="\[\e[0m\]"
     PS1="${COLOR_NONE=}\u@\h: \w ${YELLOW}$(parse_git_branch)${COLOR_NONE=}\$ "
+}
+
+function add_ssh_keys {
+    for key in $(file ~/.ssh/* | grep "private key" | sed -e 's,:.*,,') ; do
+        [ -f "$key" ] && ssh-add "$key"
+    done
+}
+
+# start the ssh-agent
+function start_agent {
+    echo "Initializing new SSH agent..."
+    # spawn ssh-agent
+    ssh-agent | sed 's/^echo/#echo/' > "$SSH_ENV"
+    echo succeeded
+    chmod 600 "$SSH_ENV"
+    . "$SSH_ENV" > /dev/null
+    add_ssh_keys
+}
+
+# test for identities
+function test_identities {
+    # test whether standard identities have been added to the agent already
+    ssh-add -l | grep -q "The agent has no identities"
+    if [ $? -eq 0 ]; then
+        add_ssh_keys
+        # $SSH_AUTH_SOCK broken so we start a new proper agent
+        if [ $? -eq 2 ];then
+            start_agent
+        fi
+    fi
+}
+
+function add_all_ssh_keys {
+# check for running ssh-agent with proper $SSH_AGENT_PID
+    if [ -n "$SSH_AGENT_PID" ]; then
+        ps -ef | grep "$SSH_AGENT_PID" | grep ssh-agent > /dev/null
+        if [ $? -eq 0 ]; then
+            test_identities
+        fi
+    # if $SSH_AGENT_PID is not properly set, we might be able to load one from
+    # $SSH_ENV
+    else
+        if [ -f "$SSH_ENV" ]; then
+            . "$SSH_ENV" > /dev/null
+        fi
+        ps -ef | grep "$SSH_AGENT_PID" | grep -v grep | grep ssh-agent > /dev/null
+        if [ $? -eq 0 ]; then
+            test_identities
+        else
+            start_agent
+        fi
+    fi
 }
 
 
@@ -94,12 +149,13 @@ if [ -x /usr/bin/dircolors ]; then
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
 
-    #alias grep='grep --color=auto'
-    #alias fgrep='fgrep --color=auto'
-    #alias egrep='egrep --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
 fi
 
 # some more ls aliases
+alias l='ls -l'
 alias ll='ls -la'
 #alias la='ls -A'
 #alias l='ls -CF'
@@ -121,71 +177,17 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 
 
-
 SSH_ENV="$HOME/.ssh/environment"
 
-function add_ssh_keys {
-    for key in $(file ~/.ssh/* | grep "private key" | sed -e 's,:.*,,') ; do
-        [ -f "$key" ] && ssh-add "$key"
-    done
-}
 
-# start the ssh-agent
-function start_agent {
-    echo "Initializing new SSH agent..."
-    # spawn ssh-agent
-    ssh-agent | sed 's/^echo/#echo/' > "$SSH_ENV"
-    echo succeeded
-    chmod 600 "$SSH_ENV"
-    . "$SSH_ENV" > /dev/null
-    add_ssh_keys
-}
-
-# test for identities
-function test_identities {
-    # test whether standard identities have been added to the agent already
-    ssh-add -l | grep -q "The agent has no identities"
-    if [ $? -eq 0 ]; then
-        add_ssh_keys
-        # $SSH_AUTH_SOCK broken so we start a new proper agent
-        if [ $? -eq 2 ];then
-            start_agent
-        fi
-    fi
-}
-
-# check for running ssh-agent with proper $SSH_AGENT_PID
-if [ -n "$SSH_AGENT_PID" ]; then
-    ps -ef | grep "$SSH_AGENT_PID" | grep ssh-agent > /dev/null
-    if [ $? -eq 0 ]; then
-	test_identities
-    fi
-# if $SSH_AGENT_PID is not properly set, we might be able to load one from
-# $SSH_ENV
-else
-    if [ -f "$SSH_ENV" ]; then
-	. "$SSH_ENV" > /dev/null
-    fi
-    ps -ef | grep "$SSH_AGENT_PID" | grep -v grep | grep ssh-agent > /dev/null
-    if [ $? -eq 0 ]; then
-        test_identities
-    else
-        start_agent
-    fi
-fi
-
-
-# alias
-alias ll='ls -la'
-alias l='ls -l'
-alias grep='grep --color=auto'
-alias egrep='egrep --color=auto'
-
-# export
+# export some variables
 export EDITOR=vim
 export DEBFULLNAME="Thilo Uttendorfer"
 export DEBEMAIL="debian@uttendorfer.net"
 
 [ -d ~/bin ] && export PATH="${PATH}:~/bin"
 [ -d ~/configs-and-scripts/bin ] && export PATH="${PATH}:~/configs-and-scripts/bin"
+
+# adding ssh keys to the agent at the end so it's no problem to ctrl-c it
+add_all_ssh_keys 
 
