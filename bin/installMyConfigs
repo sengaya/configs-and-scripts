@@ -10,4 +10,4 @@ for config in $(find  ~/configs-and-scripts/ -maxdepth 1  -type f  -name '.*' -p
     ln -s "configs-and-scripts/$config" ~/"$config"
 done
 
-rmdir ~/backup.$timestamp 2> /dev/null || echo "\nFinished, backup folder: ~/backup.$timestamp"
+rmdir ~/backup.$timestamp 2> /dev/null || echo -e "\nFinished, backup folder: ~/backup.$timestamp"
