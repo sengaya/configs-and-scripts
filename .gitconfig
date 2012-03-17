@@ -1,0 +1,9 @@
+[user]
+	name = Thilo Uttendorfer
+	email = tlo@sengaya.de
+[core]
+	editor = vim
+[color]
+	diff = auto
+	status = auto
+	branch = auto
