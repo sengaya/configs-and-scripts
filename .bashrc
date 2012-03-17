@@ -56,7 +56,8 @@ function test_identities {
 }
 
 function add_all_ssh_keys {
-# check for running ssh-agent with proper $SSH_AGENT_PID
+    [ -d "~/.ssh" ] && return 0
+    # check for running ssh-agent with proper $SSH_AGENT_PID
     if [ -n "$SSH_AGENT_PID" ]; then
         ps -ef | grep "$SSH_AGENT_PID" | grep ssh-agent > /dev/null
         if [ $? -eq 0 ]; then
