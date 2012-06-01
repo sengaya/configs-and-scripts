@@ -185,6 +185,7 @@ SSH_ENV="$HOME/.ssh/environment"
 export EDITOR=vim
 export DEBFULLNAME="Thilo Uttendorfer"
 export DEBEMAIL="debian@uttendorfer.net"
+export QUILT_PATCHES=debian/patches
 
 [ -d ~/bin ] && export PATH="${PATH}:~/bin"
 [ -d ~/configs-and-scripts/bin ] && export PATH="${PATH}:~/configs-and-scripts/bin"
