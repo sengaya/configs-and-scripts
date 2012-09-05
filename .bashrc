@@ -99,9 +99,10 @@ shopt -s checkwinsize
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # set a fancy prompt (non-color, unless we know we "want" color)
-# stupid gnome-terminal sets only xterm, see https://bugs.launchpad.net/ubuntu/+source/bash/+bug/103929
+#  - stupid gnome-terminal sets only xterm, see https://bugs.launchpad.net/ubuntu/+source/bash/+bug/103929
+#  - Mac OS X sets xterm-256color
 case "$TERM" in
-    xterm-color|xterm)
+    xterm-color|xterm|xterm-256color)
         PROMPT_COMMAND=set_prompt
     ;;
     *)
