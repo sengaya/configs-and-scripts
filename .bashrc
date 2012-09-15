@@ -143,6 +143,8 @@ fi
 
 SSH_ENV="$HOME/.ssh/environment"
 
+HISTSIZE=10000
+HISTFILESIZE=$HISTSIZE
 
 # export some variables
 export EDITOR=vim
