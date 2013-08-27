@@ -3,7 +3,9 @@
 timestamp=$(date "+%s")
 mkdir ~/backup.$timestamp
 
-for config in $(find  ~/configs-and-scripts/ -maxdepth 1  -type f  -name '.*' -printf '%f\n' ); do
+for configpath in ~/configs-and-scripts/.[^.]* ; do
+    config=${configpath##*/}
+    [ "$config" == ".git" ] && continue
     echo "Installing... $config"
     [ -h ~/"$config" ] && rm ~/"$config"
     [ -f ~/"$config" ] && mv ~/"$config" ~/backup.$timestamp/
