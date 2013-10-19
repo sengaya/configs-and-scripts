@@ -6,14 +6,12 @@
 [ -z "$PS1" ] && return
 
 
+### functions ###
+
 #showing git branches in bash prompt
 function parse_git_branch {
   [ -x "$(which git)" ] && git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
-
-
-
-### functions ###
 
 function set_prompt {
     # set a fancy prompt
