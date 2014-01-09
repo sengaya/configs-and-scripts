@@ -137,7 +137,7 @@ fi
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
-if [ -x "/usr/local/bin/brew" -a -f "$(brew --prefix)/etc/bash_completion" ]; then
+if [ -x "/usr/local/bin/brew" ] && [ -f "$(brew --prefix)/etc/bash_completion" ]; then
     . $(brew --prefix)/etc/bash_completion
 fi
 
