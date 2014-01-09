@@ -9,3 +9,4 @@
 	branch = auto
 [include]
 	path = .gitconfig.github
+	path = .gitconfig.local
