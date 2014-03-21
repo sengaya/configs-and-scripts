@@ -112,7 +112,6 @@ esac
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
-
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
@@ -129,6 +128,10 @@ alias ll='ls -la'
 
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
+fi
+
+if hash pwgen ; then
+    alias pw='pwgen --symbols -n -c 10'
 fi
 
 # enable programmable completion features (you don't need to enable
@@ -149,6 +152,8 @@ HISTFILESIZE=$HISTSIZE
 
 # export some variables
 export EDITOR=vim
+
+# debian stuff
 export DEBFULLNAME="Thilo Uttendorfer"
 export DEBEMAIL="debian@uttendorfer.net"
 export QUILT_PATCHES=debian/patches
