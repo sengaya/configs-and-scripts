@@ -10,3 +10,5 @@
 [include]
 	path = .gitconfig.github
 	path = .gitconfig.local
+[push]
+	default = simple
